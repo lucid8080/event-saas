@@ -127,3 +127,30 @@ This project was inspired by shadcn's [Taxonomy](https://github.com/shadcn-ui/ta
 - Steven Tey ([@steventey](https://twitter.com/steventey))
 - Antonio Erdeljac ([@YTCodeAntonio](https://twitter.com/AntonioErdeljac))
 # event-saas
+
+## Development of event-saas
+
+### 🛠️ Technical Implementation (date: 05/11/2024)
+- Integrated Ideogram.ai API
+- Added image generation endpoint
+- Implemented aspect ratio conversion
+- Enhanced error handling
+- Added loading states
+
+### 🎯 How to Use
+1. 📝 Enter your desired image description
+2. 🎨 Select a style preset (optional)
+3. 📐 Choose your preferred aspect ratio
+4. 🚀 Click "Generate" and watch the magic happen!
+
+### 🔜 Coming Soon
+- Additional style presets
+- Image history
+- Advanced customization options
+- Sharing capabilities
+
+## 🤝 Contributing
+Feel free to contribute to this project! Open a PR or create an issue for any bugs or feature requests.
+
+## 📄 License
+This project is licensed under the MIT License - see the LICENSE.md file for details.# event-saas
