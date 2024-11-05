@@ -26,6 +26,49 @@ export function ImageGenerator() {
   const [prompt, setPrompt] = useState("");
   const [selectedStyle, setSelectedStyle] = useState<number | null>(null);
   const [selectedShape, setSelectedShape] = useState(shapes[2]); // Default to 1:1
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGenerateImage = async () => {
+    try {
+      // Convert the selected shape's aspect ratio to the format expected by the API
+      const getAspectRatio = () => {
+        const [width, height] = selectedShape.aspect.split(':');
+        return `ASPECT_${width}_${height}`;
+      };
+
+      const response = await fetch("https://api.ideogram.ai/generate", {
+        method: "POST",
+        headers: {
+          "Api-Key": "m8ngdGXq5dtR9UCkchGs2jcoLgJycMrEUfx3JbLIrRFWYfvDAOUNbBPSRaA4yE-46q_mkUFolEzKYXGrxZ8IBQ",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "image_request": {
+            "prompt": prompt || "Please enter a prompt", // Use the prompt from state
+            "aspect_ratio": getAspectRatio(), // Convert selected shape to API format
+            "model": "V_2",
+            "magic_prompt_option": "AUTO"
+          }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("API Response:", data);
+
+      // Update the generated image URL if the response contains an image
+      if (data.data && data.data[0]?.url) {
+        setGeneratedImageUrl(data.data[0].url);
+      }
+    } catch (error) {
+      console.error("Error generating image:", error);
+      // You might want to show an error message to the user here
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -42,10 +85,19 @@ export function ImageGenerator() {
         <Button 
           className="w-full bg-purple-600 hover:bg-purple-700"
           size="lg"
+          onClick={handleGenerateImage}
+          disabled={isLoading}
         >
-          Generate
+          {isLoading ? "Generating..." : "Generate"}
         </Button>
       </Card>
+
+      {generatedImageUrl && (
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Generated Image</h2>
+          <img src={generatedImageUrl} alt="Generated" className="w-full h-auto" />
+        </Card>
+      )}
 
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Choose a style</h2>
