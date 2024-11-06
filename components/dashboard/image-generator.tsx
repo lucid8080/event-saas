@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const stylePresets = [
   { id: 1, thumbnail: "/style1.png", name: "Panda" },
@@ -86,9 +85,8 @@ export function ImageGenerator() {
           className="w-full bg-purple-600 hover:bg-purple-700"
           size="lg"
           onClick={handleGenerateImage}
-          disabled={isLoading}
         >
-          {isLoading ? "Generating..." : "Generate"}
+          Generate
         </Button>
       </Card>
 
