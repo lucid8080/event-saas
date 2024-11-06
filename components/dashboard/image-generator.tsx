@@ -21,8 +21,13 @@ const shapes = [
   { id: 5, aspect: "3:4", width: 1200, height: 1600 },
 ];
 
-export function ImageGenerator() {
+interface ImageGeneratorProps {
+  masterPrompts?: string[];
+}
+
+export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
   const [prompt, setPrompt] = useState("");
+  const [selectedMasterPrompt, setSelectedMasterPrompt] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<number | null>(null);
   const [selectedShape, setSelectedShape] = useState(shapes[2]); // Default to 1:1
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
@@ -30,6 +35,10 @@ export function ImageGenerator() {
 
   const handleGenerateImage = async () => {
     try {
+      const finalPrompt = selectedMasterPrompt 
+        ? `${selectedMasterPrompt} ${prompt}`
+        : prompt;
+        
       // Convert the selected shape's aspect ratio to the format expected by the API
       const getAspectRatio = () => {
         const [width, height] = selectedShape.aspect.split(':');
@@ -44,7 +53,7 @@ export function ImageGenerator() {
         },
         body: JSON.stringify({
           "image_request": {
-            "prompt": prompt || "Please enter a prompt", // Use the prompt from state
+            "prompt": finalPrompt,
             "aspect_ratio": getAspectRatio(), // Convert selected shape to API format
             "model": "V_2",
             "magic_prompt_option": "AUTO"
@@ -73,6 +82,24 @@ export function ImageGenerator() {
     <div className="space-y-6">
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create an image from text prompt</h2>
+        
+        {masterPrompts.length > 0 && (
+          <div className="mb-4">
+            <label className="text-sm font-medium mb-2 block">
+              Select Master Prompt Template (Optional)
+            </label>
+            <select 
+              className="w-full rounded-md border p-2"
+              onChange={(e) => setSelectedMasterPrompt(e.target.value || null)}
+              value={selectedMasterPrompt || ""}
+            >
+              <option value="">None</option>
+              {masterPrompts.map((mp, idx) => (
+                <option key={idx} value={mp}>{mp}</option>
+              ))}
+            </select>
+          </div>
+        )}
         
         <Textarea
           placeholder="Enter your image description..."
