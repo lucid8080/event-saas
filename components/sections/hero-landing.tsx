@@ -40,9 +40,9 @@ export default async function HeroLanding() {
         </Link>
 
         <h1 className="text-balance font-urban text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-[66px]">
-          Kick off with a bang with{" "}
+          Instant Flyers Ready for Print or Social Media{" "}
           <span className="text-gradient_indigo-purple font-extrabold">
-            SaaS Starter
+          No Designer Needed!
           </span>
         </h1>
 
@@ -50,8 +50,9 @@ export default async function HeroLanding() {
           className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           style={{ animationDelay: "0.35s", animationFillMode: "forwards" }}
         >
-          Build your next project using Next.js 14, Prisma, Neon, Auth.js v5,
-          Resend, React Email, Shadcn/ui, Stripe.
+          Generate eye-catching, digital & print-ready event flyers in seconds. 
+          Perfect for weddings, birthdays, and more—EventCraftAI brings PRO design 
+          to your fingertips, without the cost or hassle of hiring a designer!
         </p>
 
         <div

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Icons } from "@/components/shared/icons";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SavedPrompt {
   id: string;
@@ -15,6 +16,20 @@ interface SavedPrompt {
 export function MasterPromptBox() {
   const [prompt, setPrompt] = useState("");
   const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
+  const { toast } = useToast();
+
+  // Load saved prompts from localStorage on component mount
+  useEffect(() => {
+    const storedPrompts = localStorage.getItem("masterPrompts");
+    if (storedPrompts) {
+      setSavedPrompts(JSON.parse(storedPrompts));
+    }
+  }, []);
+
+  // Save prompts to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("masterPrompts", JSON.stringify(savedPrompts));
+  }, [savedPrompts]);
 
   const handleSavePrompt = async () => {
     if (!prompt.trim()) return;
@@ -25,13 +40,23 @@ export function MasterPromptBox() {
       createdAt: new Date(),
     };
 
-    // Here you would typically save to your database
     setSavedPrompts([newPrompt, ...savedPrompts]);
     setPrompt("");
+    
+    toast({
+      title: "Prompt Saved",
+      description: "Your master prompt has been saved successfully.",
+    });
   };
 
   const handleDeletePrompt = (id: string) => {
     setSavedPrompts(savedPrompts.filter(p => p.id !== id));
+    
+    toast({
+      title: "Prompt Deleted",
+      description: "The master prompt has been removed.",
+      variant: "destructive",
+    });
   };
 
   return (
@@ -57,14 +82,21 @@ export function MasterPromptBox() {
 
       {savedPrompts.length > 0 && (
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Saved Prompts</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Saved Prompts ({savedPrompts.length})
+          </h2>
           <div className="space-y-4">
             {savedPrompts.map((savedPrompt) => (
               <div 
                 key={savedPrompt.id} 
-                className="flex items-start justify-between p-3 border rounded-lg"
+                className="flex items-start justify-between p-3 border rounded-lg hover:bg-muted/50"
               >
-                <p className="text-sm">{savedPrompt.text}</p>
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm">{savedPrompt.text}</p>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(savedPrompt.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
