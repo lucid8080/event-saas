@@ -5,6 +5,7 @@ import { constructMetadata } from "@/lib/utils";
 import { DashboardHeader } from "@/components/dashboard/header";
 import InfoCard from "@/components/dashboard/info-card";
 import TransactionsList from "@/components/dashboard/transactions-list";
+import { ImageGenerator } from "@/components/dashboard/image-generator";
 
 export const metadata = constructMetadata({
   title: "Admin – SaaS Starter",
