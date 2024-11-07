@@ -56,6 +56,63 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
   const [selectedEventType, setSelectedEventType] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Initialize savedPrompts from localStorage
+  const [savedPrompts, setSavedPrompts] = useState<Array<{text: string, date: string}>>([]);
+
+  // Load saved prompts when component mounts
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('savedPrompts');
+      if (saved) {
+        setSavedPrompts(JSON.parse(saved));
+      }
+    }
+  }, []);
+
+  // Save prompts whenever they change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('savedPrompts', JSON.stringify(savedPrompts));
+    }
+  }, [savedPrompts]);
+
+  // Load the selected master prompt from localStorage on component mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedPrompt = localStorage.getItem('selectedMasterPrompt');
+      if (storedPrompt) {
+        setSelectedMasterPrompt(storedPrompt);
+      }
+    }
+  }, []);
+
+  // Save the selected master prompt to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== "undefined" && selectedMasterPrompt !== null) {
+      localStorage.setItem('selectedMasterPrompt', selectedMasterPrompt);
+    }
+  }, [selectedMasterPrompt]);
+
+  const [savedMasterPrompts, setSavedMasterPrompts] = useState<Array<{id: string, text: string}>>([]);
+
+  // Load saved master prompts
+  useEffect(() => {
+    const stored = localStorage.getItem("masterPrompts");
+    if (stored) {
+      try {
+        const parsedPrompts = JSON.parse(stored);
+        setSavedMasterPrompts(parsedPrompts);
+      } catch (error) {
+        console.error("Error loading master prompts:", error);
+      }
+    }
+  }, []);
+
+  // Add a function to handle selecting a master prompt
+  const handleMasterPromptSelect = (selectedPrompt: string) => {
+    setPrompt(selectedPrompt); // Set the selected prompt as the current prompt
+  };
+
   const handleGenerateImage = async () => {
     try {
       setIsLoading(true);
@@ -115,16 +172,40 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
     }
   };
 
+  function hideEventType() {
+    const eventType = document.getElementById('eventType');
+    if (eventType) {
+        eventType.style.display = 'none'; // Explicitly set to 'none' to hide
+    }
+  }
+
+  // Your existing save prompt function should update the state like this:
+  const handleSavePrompt = (promptText: string) => {
+    const newPrompt = {
+      text: promptText,
+      date: new Date().toLocaleDateString()
+    };
+    setSavedPrompts(prevPrompts => [...prevPrompts, newPrompt]);
+  };
+
+  // Modify your delete prompt function
+  const handleDeletePrompt = (index: number) => {
+    setSavedPrompts(prevPrompts => prevPrompts.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create an image from text prompt</h2>
         
+        {/* Remove or comment out this block to hide the "Select Event Type" feature */}
+        {/*
         <div className="mb-4">
           <label className="text-sm font-medium mb-2 block">
             Select Event Type
           </label>
           <select 
+            id="eventType"
             className="w-full rounded-md border p-2"
             onChange={(e) => setSelectedEventType(e.target.value || null)}
             value={selectedEventType || ""}
@@ -135,6 +216,7 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
             ))}
           </select>
         </div>
+        */}
         
         {masterPrompts.length > 0 && (
           <div className="mb-4">
@@ -246,6 +328,10 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
           ))}
         </div>
       </Card>
+
+      <Button onClick={hideEventType}>
+        Hide Event Type
+      </Button>
     </div>
   );
 } 

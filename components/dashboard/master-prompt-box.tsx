@@ -10,26 +10,41 @@ import { useToast } from "@/components/ui/use-toast";
 interface SavedPrompt {
   id: string;
   text: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export function MasterPromptBox() {
   const [prompt, setPrompt] = useState("");
   const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
+  const [mounted, setMounted] = useState(false);
   const { toast } = useToast();
 
-  // Load saved prompts from localStorage on component mount
+  // Set mounted state
   useEffect(() => {
-    const storedPrompts = localStorage.getItem("masterPrompts");
-    if (storedPrompts) {
-      setSavedPrompts(JSON.parse(storedPrompts));
-    }
+    setMounted(true);
   }, []);
 
-  // Save prompts to localStorage whenever they change
+  // Load saved prompts from localStorage on mount only
   useEffect(() => {
-    localStorage.setItem("masterPrompts", JSON.stringify(savedPrompts));
-  }, [savedPrompts]);
+    if (mounted) {
+      const stored = localStorage.getItem("masterPrompts");
+      if (stored) {
+        try {
+          const parsedPrompts = JSON.parse(stored);
+          setSavedPrompts(parsedPrompts);
+        } catch (error) {
+          console.error("Error parsing stored prompts:", error);
+        }
+      }
+    }
+  }, [mounted]);
+
+  // Save to localStorage whenever savedPrompts changes
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("masterPrompts", JSON.stringify(savedPrompts));
+    }
+  }, [savedPrompts, mounted]);
 
   const handleSavePrompt = async () => {
     if (!prompt.trim()) return;
@@ -37,10 +52,10 @@ export function MasterPromptBox() {
     const newPrompt: SavedPrompt = {
       id: crypto.randomUUID(),
       text: prompt.trim(),
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
 
-    setSavedPrompts([newPrompt, ...savedPrompts]);
+    setSavedPrompts(prevPrompts => [newPrompt, ...prevPrompts]);
     setPrompt("");
     
     toast({
@@ -50,7 +65,7 @@ export function MasterPromptBox() {
   };
 
   const handleDeletePrompt = (id: string) => {
-    setSavedPrompts(savedPrompts.filter(p => p.id !== id));
+    setSavedPrompts(prevPrompts => prevPrompts.filter(p => p.id !== id));
     
     toast({
       title: "Prompt Deleted",
@@ -59,56 +74,59 @@ export function MasterPromptBox() {
     });
   };
 
+  // Only render the component content when mounted
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Master Prompt Box</h2>
-        
+    <Card className="p-4">
+      <h2 className="text-xl font-bold">Master Prompt Box</h2>
+      <div className="mt-4">
         <Textarea
           placeholder="Enter master prompt template..."
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          className="min-h-[100px] mb-4"
+          className="min-h-[100px]"
         />
-        
-        <Button 
-          className="w-full bg-purple-600 hover:bg-purple-700"
-          size="lg"
+        <Button
           onClick={handleSavePrompt}
+          className="mt-4 w-full rounded-md bg-purple-600 font-medium text-black transition-colors hover:bg-purple-700 dark:bg-purple-600 dark:text-black dark:hover:bg-purple-700"
+          variant="default"
         >
           Save Prompt Template
         </Button>
-      </Card>
+      </div>
 
       {savedPrompts.length > 0 && (
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">
+        <div className="mt-6">
+          <h3 className="mb-4 text-lg font-semibold">
             Saved Prompts ({savedPrompts.length})
-          </h2>
+          </h3>
           <div className="space-y-4">
             {savedPrompts.map((savedPrompt) => (
-              <div 
-                key={savedPrompt.id} 
-                className="flex items-start justify-between p-3 border rounded-lg hover:bg-muted/50"
+              <div
+                key={savedPrompt.id}
+                className="flex items-center justify-between rounded-lg border p-4"
               >
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm">{savedPrompt.text}</p>
-                  <span className="text-xs text-muted-foreground">
+                <div>
+                  <p>{savedPrompt.text}</p>
+                  <p className="text-sm text-muted-foreground">
                     {new Date(savedPrompt.createdAt).toLocaleDateString()}
-                  </span>
+                  </p>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleDeletePrompt(savedPrompt.id)}
                 >
-                  <Icons.trash className="h-4 w-4" />
+                  <Icons.trash className="size-4" />
                 </Button>
               </div>
             ))}
           </div>
-        </Card>
+        </div>
       )}
-    </div>
+    </Card>
   );
 } 
