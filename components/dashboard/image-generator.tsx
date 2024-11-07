@@ -10,7 +10,17 @@ const stylePresets = [
   { id: 2, thumbnail: "/styles/2_Pop_Art.jpg", name: "Pop Art", description: "vibrant pop art-style portrait reminiscent of the works of artists like Roy Lichtenstein." },
   { id: 3, thumbnail: "/styles/3_children_book.jpg", name: "Children Book", description: "Whimsical and playful illustrations." },
   { id: 4, thumbnail: "/styles/4_Political_Satire.jpg", name: "Political Satire", description: "Detailed political caricature, formal government office backdrop, realistic shading, and satirical tone" },
-  { id: 5, thumbnail: "/styles/5_Vintage_Film_Poster.jpg", name: "Vintage Film Poster", description: "Classic and nostalgic look." },
+  { id: 5, thumbnail: "/styles/5_Vintage_Film_Poster.jpg", name: "Vintage Film Poster", description: "Vintage action movie poster style, bold colors, dramatic lighting, 80s retro aesthetic against a sunset backdrop with palm trees and urban silhouettes." },
+  { id: 6, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Japanese animation style artwork." },
+  { id: 7, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Soft, flowing watercolor artistic style." },
+  { id: 8, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Modern 3D rendered digital art." },
+  { id: 9, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Retro-style pixel-based artwork." },
+  { id: 10, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Classical oil painting style." },
+  { id: 11, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Bold comic book illustration style." },
+  { id: 12, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Clean, simple minimalist design." },
+  { id: 13, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Victorian-era mechanical aesthetic." },
+  { id: 14, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Ornate and nature-inspired artistic style." },
+  { id: 15, thumbnail: "/styles/placeholder.png", name: "Coming Soon", description: "Dark and dramatic gothic artwork." },
 ];
 
 const shapes = [
@@ -42,6 +52,7 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedEventType, setSelectedEventType] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleGenerateImage = async () => {
     try {
@@ -169,39 +180,41 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Choose a style</h2>
         
-        <div className="grid grid-cols-5 gap-4 mb-4">
-          {stylePresets.map((style) => (
-            <div key={style.id} className="flex flex-col">
-              <button
-                onClick={() => setSelectedStyle(style.id)}
-                className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                  selectedStyle === style.id ? 'border-purple-600' : 'border-transparent'
-                }`}
-              >
-                <img
-                  src={style.thumbnail}
-                  alt={style.name}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    console.error(`Failed to load image: ${style.thumbnail}`);
-                    e.currentTarget.src = "/placeholder.png"
-                  }}
-                />
-              </button>
-              <div className="mt-2 text-center">
-                <h3 className="font-semibold text-sm">{style.name}</h3>
-                {/* <p className="text-xs text-gray-600">{style.description}</p> */}
+        <div className={`transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[600px]' : 'max-h-[250px]'}`}>
+          <div className="grid grid-cols-5 gap-4">
+            {/* Show first 5 presets when collapsed */}
+            {stylePresets.slice(0, isExpanded ? stylePresets.length : 5).map((style) => (
+              <div key={style.id} className="flex flex-col">
+                <button
+                  onClick={() => setSelectedStyle(style.id)}
+                  className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                    selectedStyle === style.id ? 'border-purple-600' : 'border-transparent'
+                  }`}
+                >
+                  <img
+                    src={style.thumbnail}
+                    alt={style.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error(`Failed to load image: ${style.thumbnail}`);
+                      e.currentTarget.src = "/styles/placeholder.png"
+                    }}
+                  />
+                </button>
+                <div className="mt-2 text-center">
+                  <h3 className="font-semibold text-sm">{style.name}</h3>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <Button 
-          variant="outline" 
-          className="w-full"
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full mt-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
         >
-          Choose more styles
-        </Button>
+          {isExpanded ? 'Show Less Styles' : 'Choose More Styles'}
+        </button>
       </Card>
 
       <Card className="p-6">
