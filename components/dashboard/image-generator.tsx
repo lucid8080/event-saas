@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import "@/styles/loader.css";
-
+//🚧 6 - 15 is a temporary list of styles, we will eventually fill this with all the styles we have
 const stylePresets = [
   { id: 1, thumbnail: "/styles/1_Cyberpunk.jpg", name: "Cyberpunk", description: "Futuristic and neon-lit style." },
   { id: 2, thumbnail: "/styles/2_Pop_Art.jpg", name: "Pop Art", description: "vibrant pop art-style portrait reminiscent of the works of artists like Roy Lichtenstein." },
