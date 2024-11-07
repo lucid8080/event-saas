@@ -4,11 +4,11 @@ import { env } from "@/env.mjs";
 export const pricingData: SubscriptionPlan[] = [
   {
     title: "Starter",
-    description: "For Beginners",
+    description: "Perfect for getting started",
     benefits: [
-      "Up to 100 monthly posts",
-      "Basic analytics and reporting",
-      "Access to standard templates",
+      "10 - 15 monthly images",
+      "Basic customization options",
+      "Standard resolution images suitable for online sharing",
     ],
     limitations: [
       "No priority access to new features.",
@@ -17,19 +17,19 @@ export const pricingData: SubscriptionPlan[] = [
       "Limited access to business resources.",
     ],
     prices: {
-      monthly: 0,
-      yearly: 0,
+      monthly: 15,
+      yearly: 144,
     },
     stripeIds: {
-      monthly: null,
-      yearly: null,
+      monthly: env.NEXT_PUBLIC_STRIPE_STARTER_MONTHLY_PLAN_ID,
+      yearly: env.NEXT_PUBLIC_STRIPE_STARTER_YEARLY_PLAN_ID,
     },
   },
   {
     title: "Pro",
-    description: "Unlock Advanced Features",
+    description: "Best for growing businesses",
     benefits: [
-      "Up to 500 monthly posts",
+      "50 - 75 monthly images",
       "Advanced analytics and reporting",
       "Access to business templates",
       "Priority customer support",
@@ -40,8 +40,8 @@ export const pricingData: SubscriptionPlan[] = [
       "Limited access to business resources.",
     ],
     prices: {
-      monthly: 15,
-      yearly: 144,
+      monthly: 45,
+      yearly: 432,
     },
     stripeIds: {
       monthly: env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID,
@@ -50,9 +50,9 @@ export const pricingData: SubscriptionPlan[] = [
   },
   {
     title: "Business",
-    description: "For Power Users",
+    description: "For larger organizations",
     benefits: [
-      "Unlimited posts",
+      "200 monthly images",
       "Real-time analytics and reporting",
       "Access to all templates, including custom branding",
       "24/7 business customer support",
@@ -60,8 +60,8 @@ export const pricingData: SubscriptionPlan[] = [
     ],
     limitations: [],
     prices: {
-      monthly: 30,
-      yearly: 300,
+      monthly: 120,
+      yearly: 1152,
     },
     stripeIds: {
       monthly: env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID,
@@ -74,7 +74,6 @@ export const plansColumns = [
   "starter",
   "pro",
   "business",
-  "enterprise",
 ] as const;
 
 export const comparePlans: PlansRow[] = [

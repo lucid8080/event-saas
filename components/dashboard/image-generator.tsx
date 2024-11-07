@@ -6,11 +6,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 
 const stylePresets = [
-  { id: 1, thumbnail: "/style1.png", name: "Panda" },
-  { id: 2, thumbnail: "/style2.png", name: "Forest" },
-  { id: 3, thumbnail: "/style3.png", name: "Cyber" },
-  { id: 4, thumbnail: "/style4.png", name: "Anime" },
-  { id: 5, thumbnail: "/style5.png", name: "Nature" },
+  { id: 1, thumbnail: "/styles/1_Cyberpunk.jpg", name: "Cyberpunk" },
+  { id: 2, thumbnail: "/styles/2_Pop_Art.jpg", name: "Pop Art" },
+  { id: 3, thumbnail: "/styles/3_children_book.jpg", name: "Children Book" },
+  { id: 4, thumbnail: "/styles/4_Political_Satire.jpg", name: "Political Satire" },
+  { id: 5, thumbnail: "/styles/5_Vintage_Film_Poster.jpg", name: "Vintage Film Poster" },
 ];
 
 const shapes = [
@@ -129,19 +129,27 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
         
         <div className="grid grid-cols-5 gap-4 mb-4">
           {stylePresets.map((style) => (
-            <button
-              key={style.id}
-              onClick={() => setSelectedStyle(style.id)}
-              className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                selectedStyle === style.id ? 'border-purple-600' : 'border-transparent'
-              }`}
-            >
-              <img
-                src={style.thumbnail}
-                alt={style.name}
-                className="w-full h-full object-cover"
-              />
-            </button>
+            <div key={style.id} className="flex flex-col">
+              <button
+                onClick={() => setSelectedStyle(style.id)}
+                className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                  selectedStyle === style.id ? 'border-purple-600' : 'border-transparent'
+                }`}
+              >
+                <img
+                  src={style.thumbnail}
+                  alt={style.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error(`Failed to load image: ${style.thumbnail}`);
+                    e.currentTarget.src = "/placeholder.png"
+                  }}
+                />
+              </button>
+              <div className="mt-2 text-center">
+                <h3 className="font-semibold text-sm">{style.name}</h3>
+              </div>
+            </div>
           ))}
         </div>
 
