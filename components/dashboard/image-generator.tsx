@@ -6,11 +6,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 
 const stylePresets = [
-  { id: 1, thumbnail: "/styles/1_Cyberpunk.jpg", name: "Cyberpunk" },
-  { id: 2, thumbnail: "/styles/2_Pop_Art.jpg", name: "Pop Art" },
-  { id: 3, thumbnail: "/styles/3_children_book.jpg", name: "Children Book" },
-  { id: 4, thumbnail: "/styles/4_Political_Satire.jpg", name: "Political Satire" },
-  { id: 5, thumbnail: "/styles/5_Vintage_Film_Poster.jpg", name: "Vintage Film Poster" },
+  { id: 1, thumbnail: "/styles/1_Cyberpunk.jpg", name: "Cyberpunk", description: "Futuristic and neon-lit style." },
+  { id: 2, thumbnail: "/styles/2_Pop_Art.jpg", name: "Pop Art", description: "vibrant pop art-style portrait reminiscent of the works of artists like Roy Lichtenstein." },
+  { id: 3, thumbnail: "/styles/3_children_book.jpg", name: "Children Book", description: "Whimsical and playful illustrations." },
+  { id: 4, thumbnail: "/styles/4_Political_Satire.jpg", name: "Political Satire", description: "Humorous and critical style." },
+  { id: 5, thumbnail: "/styles/5_Vintage_Film_Poster.jpg", name: "Vintage Film Poster", description: "Classic and nostalgic look." },
 ];
 
 const shapes = [
@@ -22,12 +22,12 @@ const shapes = [
 ];
 
 const eventTypes = [
-  { id: 1, name: "Birthday Party" },
-  { id: 2, name: "Wedding" },
-  { id: 3, name: "Corporate Event" },
-  { id: 4, name: "Holiday Celebration" },
-  { id: 5, name: "Concert" },
-  { id: 6, name: "Sports Event" },
+  { id: 1, name: "Birthday Party", description: "A celebration of someone's birth anniversary." },
+  { id: 2, name: "Wedding", description: "A ceremony where two people are united in marriage." },
+  { id: 3, name: "Corporate Event", description: "A gathering organized by a business for its employees, clients, or partners." },
+  { id: 4, name: "Holiday Celebration", description: "Festivities to mark a holiday or special occasion." },
+  { id: 5, name: "Concert", description: "A live music performance in front of an audience." },
+  { id: 6, name: "Sports Event", description: "A competitive event involving physical activity and skill." },
 ];
 
 interface ImageGeneratorProps {
@@ -45,10 +45,21 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
 
   const handleGenerateImage = async () => {
     try {
+      // Find the description of the selected event type
+      const eventDescription = selectedEventType
+        ? eventTypes.find(event => event.name === selectedEventType)?.description
+        : "";
+
+      // Find the description of the selected style
+      const styleDescription = selectedStyle !== null
+        ? stylePresets.find(style => style.id === selectedStyle)?.description
+        : "";
+
+      // Construct the final prompt
       const finalPrompt = selectedMasterPrompt 
-        ? `${selectedMasterPrompt} ${prompt}`
-        : prompt;
-        
+        ? `${selectedMasterPrompt} ${prompt} ${eventDescription} ${styleDescription}`
+        : `${prompt} ${eventDescription} ${styleDescription}`;
+
       // Convert the selected shape's aspect ratio to the format expected by the API
       const getAspectRatio = () => {
         const [width, height] = selectedShape.aspect.split(':');
@@ -107,6 +118,11 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
               <option key={event.id} value={event.name}>{event.name}</option>
             ))}
           </select>
+          {selectedEventType && (
+            <p className="mt-2 text-sm text-gray-600">
+              {eventTypes.find(event => event.name === selectedEventType)?.description}
+            </p>
+          )}
         </div>
         
         {masterPrompts.length > 0 && (
@@ -174,6 +190,7 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
               </button>
               <div className="mt-2 text-center">
                 <h3 className="font-semibold text-sm">{style.name}</h3>
+                <p className="text-xs text-gray-600">{style.description}</p>
               </div>
             </div>
           ))}
