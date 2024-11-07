@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import "@/styles/loader.css";
 
 const stylePresets = [
   { id: 1, thumbnail: "/styles/1_Cyberpunk.jpg", name: "Cyberpunk", description: "Futuristic and neon-lit style." },
@@ -32,13 +33,13 @@ const shapes = [
 ];
 
 const eventTypes = [
-  { id: 1, name: "Birthday Party", description: "Birthday Party theme no text unless otherwise specified." },
-  { id: 2, name: "Wedding", description: "Wedding theme no text unless otherwise specified." },
-  { id: 3, name: "Corporate Event", description: "Corporate Event theme no text unless otherwise specified." },
-  { id: 4, name: "Holiday Celebration", description: "Holiday Celebration theme no text unless otherwise specified." },
-  { id: 5, name: "Concert", description: "Concert theme no text unless otherwise specified." },
-  { id: 6, name: "Sports Event", description: "Sports Event theme no text unless otherwise specified." },
-  { id: 7, name: "Nightlife", description: "Nightlife/club event theme no text unless otherwise specified." },
+  { id: 1, name: "Birthday Party", description: "Birthday Party flyer theme no text unless otherwise specified." },
+  { id: 2, name: "Wedding", description: "Wedding flyer theme no text unless otherwise specified." },
+  { id: 3, name: "Corporate Event", description: "Corporate Event flyer theme no text unless otherwise specified." },
+  { id: 4, name: "Holiday Celebration", description: "Holiday Celebration flyer theme no text unless otherwise specified." },
+  { id: 5, name: "Concert", description: "Concert flyer theme no text unless otherwise specified." },
+  { id: 6, name: "Sports Event", description: "Sports Event flyer theme no text unless otherwise specified." },
+  { id: 7, name: "Nightlife", description: "Nightlife/club event flyer theme no text unless otherwise specified." },
 ];
 
 interface ImageGeneratorProps {
@@ -54,11 +55,6 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedEventType, setSelectedEventType] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const handleGenerateImage = async () => {
     try {
@@ -119,42 +115,8 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
     }
   };
 
-  // First, add the loading styles to your CSS file or add them inline using a style tag
-  const loaderStyles = `
-    .loader {
-      width: fit-content;
-      font-size: 40px;
-      font-family: system-ui,sans-serif;
-      font-weight: bold;
-      text-transform: uppercase;
-      color: #0000;
-      -webkit-text-stroke: 1px #000;
-      background:
-        radial-gradient(0.71em at 50% 1em,#000 99%,#0000 101%) calc(50% - 1em) 1em/2em 200% repeat-x text,
-        radial-gradient(0.71em at 50% -0.5em,#0000 99%,#000 101%) 50% 1.5em/2em 200% repeat-x text;
-      animation: 
-        l10-0 .8s linear infinite alternate,
-        l10-1  4s linear infinite;
-    }
-    .loader:before {
-      content: "Loading";
-    }
-    @keyframes l10-0 {
-      to {background-position-x: 50%,calc(50% + 1em)}
-    }
-    @keyframes l10-1 {
-      to {background-position-y: -.5em,0}
-    }
-  `;
-
-  // Only render the content after component is mounted
-  if (!isMounted) {
-    return null; // or a loading placeholder
-  }
-
   return (
     <div className="space-y-6">
-      <style>{loaderStyles}</style>
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create an image from text prompt</h2>
         
@@ -209,20 +171,16 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
       </Card>
 
       {(isLoading || generatedImageUrl) && (
-        <Card className="p-6">
+        <Card className="p-6 relative">
           <h2 className="text-xl font-semibold mb-4">Generated Image</h2>
-          <div className="relative min-h-[300px] flex items-center justify-center">
-            {isLoading && isMounted && (
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/80">
               <div className="loader"></div>
-            )}
-            {generatedImageUrl && !isLoading && (
-              <img 
-                src={generatedImageUrl} 
-                alt="Generated" 
-                className="w-full h-auto"
-              />
-            )}
-          </div>
+            </div>
+          )}
+          {generatedImageUrl && (
+            <img src={generatedImageUrl} alt="Generated" className="w-full h-auto" />
+          )}
         </Card>
       )}
 
