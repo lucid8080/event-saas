@@ -32,12 +32,13 @@ const shapes = [
 ];
 
 const eventTypes = [
-  { id: 1, name: "Birthday Party", description: "A celebration of someone's birth anniversary." },
-  { id: 2, name: "Wedding", description: "A ceremony where two people are united in marriage." },
-  { id: 3, name: "Corporate Event", description: "A gathering organized by a business for its employees, clients, or partners." },
-  { id: 4, name: "Holiday Celebration", description: "Festivities to mark a holiday or special occasion." },
-  { id: 5, name: "Concert", description: "A live music performance in front of an audience." },
-  { id: 6, name: "Sports Event", description: "A competitive event involving physical activity and skill." },
+  { id: 1, name: "Birthday Party", description: "Birthday Party theme no text unless otherwise specified." },
+  { id: 2, name: "Wedding", description: "Wedding theme no text unless otherwise specified." },
+  { id: 3, name: "Corporate Event", description: "Corporate Event theme no text unless otherwise specified." },
+  { id: 4, name: "Holiday Celebration", description: "Holiday Celebration theme no text unless otherwise specified." },
+  { id: 5, name: "Concert", description: "Concert theme no text unless otherwise specified." },
+  { id: 6, name: "Sports Event", description: "Sports Event theme no text unless otherwise specified." },
+  { id: 7, name: "Nightlife", description: "Nightlife/club event theme no text unless otherwise specified." },
 ];
 
 interface ImageGeneratorProps {
@@ -129,11 +130,6 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
               <option key={event.id} value={event.name}>{event.name}</option>
             ))}
           </select>
-          {selectedEventType && (
-            <p className="mt-2 text-sm text-gray-600">
-              {eventTypes.find(event => event.name === selectedEventType)?.description}
-            </p>
-          )}
         </div>
         
         {masterPrompts.length > 0 && (
