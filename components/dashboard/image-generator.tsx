@@ -21,6 +21,15 @@ const shapes = [
   { id: 5, aspect: "3:4", width: 1200, height: 1600 },
 ];
 
+const eventTypes = [
+  { id: 1, name: "Birthday Party" },
+  { id: 2, name: "Wedding" },
+  { id: 3, name: "Corporate Event" },
+  { id: 4, name: "Holiday Celebration" },
+  { id: 5, name: "Concert" },
+  { id: 6, name: "Sports Event" },
+];
+
 interface ImageGeneratorProps {
   masterPrompts?: string[];
 }
@@ -32,6 +41,7 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
   const [selectedShape, setSelectedShape] = useState(shapes[2]); // Default to 1:1
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedEventType, setSelectedEventType] = useState<string | null>(null);
 
   const handleGenerateImage = async () => {
     try {
@@ -82,6 +92,22 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
     <div className="space-y-6">
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create an image from text prompt</h2>
+        
+        <div className="mb-4">
+          <label className="text-sm font-medium mb-2 block">
+            Select Event Type
+          </label>
+          <select 
+            className="w-full rounded-md border p-2"
+            onChange={(e) => setSelectedEventType(e.target.value || null)}
+            value={selectedEventType || ""}
+          >
+            <option value="">Select an event type...</option>
+            {eventTypes.map((event) => (
+              <option key={event.id} value={event.name}>{event.name}</option>
+            ))}
+          </select>
+        </div>
         
         {masterPrompts.length > 0 && (
           <div className="mb-4">
