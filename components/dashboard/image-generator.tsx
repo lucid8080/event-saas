@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
@@ -54,9 +54,15 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedEventType, setSelectedEventType] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleGenerateImage = async () => {
     try {
+      setIsLoading(true);
       // Find the description of the selected event type
       const eventDescription = selectedEventType
         ? eventTypes.find(event => event.name === selectedEventType)?.description
@@ -108,11 +114,47 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
     } catch (error) {
       console.error("Error generating image:", error);
       // You might want to show an error message to the user here
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // First, add the loading styles to your CSS file or add them inline using a style tag
+  const loaderStyles = `
+    .loader {
+      width: fit-content;
+      font-size: 40px;
+      font-family: system-ui,sans-serif;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #0000;
+      -webkit-text-stroke: 1px #000;
+      background:
+        radial-gradient(0.71em at 50% 1em,#000 99%,#0000 101%) calc(50% - 1em) 1em/2em 200% repeat-x text,
+        radial-gradient(0.71em at 50% -0.5em,#0000 99%,#000 101%) 50% 1.5em/2em 200% repeat-x text;
+      animation: 
+        l10-0 .8s linear infinite alternate,
+        l10-1  4s linear infinite;
+    }
+    .loader:before {
+      content: "Loading";
+    }
+    @keyframes l10-0 {
+      to {background-position-x: 50%,calc(50% + 1em)}
+    }
+    @keyframes l10-1 {
+      to {background-position-y: -.5em,0}
+    }
+  `;
+
+  // Only render the content after component is mounted
+  if (!isMounted) {
+    return null; // or a loading placeholder
+  }
+
   return (
     <div className="space-y-6">
+      <style>{loaderStyles}</style>
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create an image from text prompt</h2>
         
@@ -166,10 +208,21 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
         </Button>
       </Card>
 
-      {generatedImageUrl && (
+      {(isLoading || generatedImageUrl) && (
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Generated Image</h2>
-          <img src={generatedImageUrl} alt="Generated" className="w-full h-auto" />
+          <div className="relative min-h-[300px] flex items-center justify-center">
+            {isLoading && isMounted && (
+              <div className="loader"></div>
+            )}
+            {generatedImageUrl && !isLoading && (
+              <img 
+                src={generatedImageUrl} 
+                alt="Generated" 
+                className="w-full h-auto"
+              />
+            )}
+          </div>
         </Card>
       )}
 
@@ -205,12 +258,13 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
           </div>
         </div>
 
-        <button
+        <Button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full mt-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+          className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-black"
+          size="lg"
         >
-          {isExpanded ? 'Show Less Styles' : 'Choose More Styles'}
-        </button>
+          {isExpanded ? 'Show Less Styles ↑' : 'Show More Styles ↓'}
+        </Button>
       </Card>
 
       <Card className="p-6">
