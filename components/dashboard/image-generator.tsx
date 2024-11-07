@@ -9,7 +9,7 @@ const stylePresets = [
   { id: 1, thumbnail: "/styles/1_Cyberpunk.jpg", name: "Cyberpunk", description: "Futuristic and neon-lit style." },
   { id: 2, thumbnail: "/styles/2_Pop_Art.jpg", name: "Pop Art", description: "vibrant pop art-style portrait reminiscent of the works of artists like Roy Lichtenstein." },
   { id: 3, thumbnail: "/styles/3_children_book.jpg", name: "Children Book", description: "Whimsical and playful illustrations." },
-  { id: 4, thumbnail: "/styles/4_Political_Satire.jpg", name: "Political Satire", description: "Humorous and critical style." },
+  { id: 4, thumbnail: "/styles/4_Political_Satire.jpg", name: "Political Satire", description: "Detailed political caricature, formal government office backdrop, realistic shading, and satirical tone" },
   { id: 5, thumbnail: "/styles/5_Vintage_Film_Poster.jpg", name: "Vintage Film Poster", description: "Classic and nostalgic look." },
 ];
 
@@ -190,7 +190,7 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
               </button>
               <div className="mt-2 text-center">
                 <h3 className="font-semibold text-sm">{style.name}</h3>
-                <p className="text-xs text-gray-600">{style.description}</p>
+                {/* <p className="text-xs text-gray-600">{style.description}</p> */}
               </div>
             </div>
           ))}
