@@ -328,10 +328,6 @@ export function ImageGenerator({ masterPrompts = [] }: ImageGeneratorProps) {
           ))}
         </div>
       </Card>
-
-      <Button onClick={hideEventType}>
-        Hide Event Type
-      </Button>
     </div>
   );
 } 
